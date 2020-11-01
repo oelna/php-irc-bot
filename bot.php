@@ -1,27 +1,13 @@
 <?php
 
-// logs
-// supervisorctl tail php-chatbot
-// supervisorctl restart php-chatbot
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
-
-// Prevent PHP from stopping the script after 30 sec
-set_time_limit(0);
-
-date_default_timezone_set('Europe/Berlin');
-DEFINE('DS', DIRECTORY_SEPARATOR);
-DEFINE('EOL', "\n");
-DEFINE('COMMANDS', __DIR__.DS.'commands');
-
-// change these values
+// config
 $server = array(
     'url' => 'irc.arnorichter.de',
-    'port' => 47361
+    'port' => 47362,
+    'ssl' => true
 );
 
+// your user data
 $user = array(
     'username' => 'oelnabot',
     'realname' => 'Arno Richter',
@@ -29,10 +15,28 @@ $user = array(
     'password' => ''
 );
 
+// which channels to join on login
 $channels = array(
     '#int', 
     '#html'
 );
+
+// stop editing here!
+
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
+date_default_timezone_set('Europe/Berlin');
+set_time_limit(0); // Prevent PHP from stopping the script after 30 sec
+
+DEFINE('DS', DIRECTORY_SEPARATOR);
+DEFINE('EOL', "\n");
+DEFINE('COMMANDS', __DIR__.DS.'commands');
+
+if(!is_dir(COMMANDS)) {
+    mkdir(COMMANDS);
+}
 
 function send($string) {
     global $socket;
@@ -45,7 +49,9 @@ function message($string, $channel) {
 }
 
 // opening the socket to the network
-$socket = fsockopen($server['url'], $server['port']);
+if(!$socket = fsockopen(($server['ssl'] ? 'ssl://' : '').$server['url'], $server['port'])) {
+    die('Could not establish connection using '.$server['url'].':'.$server['port']);
+};
 
 // send auth info
 if(!empty($user['password'])) {
@@ -113,4 +119,7 @@ while (1) {
         }
     }
 }
+
+// supervisorctl tail php-chatbot
+// supervisorctl <start|stop|restart> php-chatbot
 ?>
