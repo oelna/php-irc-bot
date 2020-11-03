@@ -1,3 +1,5 @@
+config-*.php
+
 commands/hs.php
 commands/int.php
 commands/html.php
