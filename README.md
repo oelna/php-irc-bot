@@ -29,8 +29,8 @@ This is originally a fork of https://github.com/Hammster/php-irc-bot
 ```
 return array(
 	'server' => array(
-		'url' => 'irc.arnorichter.de',
-		'port' => 47362,
+		'url' => 'chat.freenode.net',
+		'port' => 6697,
 		'ssl' => true
 	),
 	'user' => array(
@@ -39,9 +39,9 @@ return array(
 		'nickname' => 'oelnabot',
 		'password' => ''
 	),
-	'channels' => array(
-		'#int', 
-		'#html'
+	'channels' => array( // channels to auto-join on connect
+		'##linux-beginners',
+		'##crypto'
 	)
 );
 ```

@@ -4,8 +4,8 @@
 
 return array(
 	'server' => array(
-		'url' => 'irc.arnorichter.de',
-		'port' => 47362,
+		'url' => 'chat.freenode.net',
+		'port' => 6697,
 		'ssl' => true
 	),
 	// your user data
@@ -17,7 +17,7 @@ return array(
 	),
 	// which channels to join on login
 	'channels' => array(
-		'#int', 
-		'#html'
+		'##linux-beginners',
+		'##crypto'
 	)
 );
