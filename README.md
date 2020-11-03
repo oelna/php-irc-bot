@@ -48,6 +48,8 @@ return array(
 
 ### For use with Twitch IRC
 
+Get your OAuth token here: https://twitchapps.com/tmi/
+
 ```
 return array(
 	'server' => array(
