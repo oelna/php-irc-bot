@@ -76,6 +76,14 @@ return array(
 This is mostly a note to myself, in case I need to deal with this again:  
 (This assumes `php-chatbot` is set as name in your `.ini`)
 
+`˜/etc/services.d/chatbot.ini`:  
+```
+[program:php-chatbot]
+command=php /your/full/path/bot.php /your/full/path/config-custom.php
+autostart=yes
+autorestart=yes
+```
+
 See last output: `supervisorctl tail php-chatbot`  
 Start service: `supervisorctl start php-chatbot`  
 Stop service: `supervisorctl stop php-chatbot`  

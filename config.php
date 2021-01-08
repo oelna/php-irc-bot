@@ -19,5 +19,9 @@ return array(
 	'channels' => array(
 		'##linux-beginners',
 		'##crypto'
+	),
+	// who to notify in case of severe trouble
+	'admin' => array(
+		'email' => 'user@host.com'
 	)
 );
