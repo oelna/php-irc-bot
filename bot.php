@@ -19,6 +19,10 @@ $interval = 0;
 $reconnect_attempt = 1;
 $reconnect_time = 0;
 $notified_admin = false;
+$socket_failures = 0;
+$reconnect_delay = 10; // 10 seconds
+$current_reconnect_delay = $reconnect_delay;
+$max_reconnect_delay = 10*60; // 10 minutes
 
 // load config
 if(isset($argv[1]) && file_exists($argv[1])) {
@@ -35,6 +39,23 @@ function send($string) {
     global $socket;
     if(!@fputs($socket, $string . EOL)) {
         echo('socket connection error'.EOL);
+        $socket_failures += 1;
+
+        if($socket_failures > 9) {
+            // do something, the connection does not seem to work!
+            $connected = false;
+            if($current_reconnect_delay < $max_reconnect_delay) {
+                $current_reconnect_delay *= 2;
+            }
+
+            echo('attempting reconnect in '.$current_reconnect_delay.' seconds.');
+            if($socket_failures > 30 && !$notified_admin) {
+                $notified_admin = true;
+                @mail($c['admin']['email'], 'chatbot error in send()', 'you should check this error! '.__FILE__);
+            }
+
+            sleep($current_reconnect_delay);
+        }
     }
 }
 
@@ -47,10 +68,10 @@ function connect() {
     global $socket;
     global $reconnect_attempt;
 
-    echo('connecting … try #'.$reconnect_attempt.EOL);
+    echo('Connecting … try #'.$reconnect_attempt.EOL);
 
     // opening the socket to the network
-    if(!$socket = fsockopen(($c['server']['ssl'] ? 'ssl://' : '').$c['server']['url'], $c['server']['port'])) {
+    if(!$socket = @fsockopen(($c['server']['ssl'] ? 'ssl://' : '').$c['server']['url'], $c['server']['port'])) {
         die('Could not establish connection using '.$c['server']['url'].':'.$c['server']['port']);
     };
 
@@ -139,11 +160,13 @@ while (1) {
         }
 
         if ($parsed->command && mb_strtoupper($parsed->command) == '001') {
-            // connected successfully
+            // connected successfully, reset some values
             $connected = true;
             $reconnect_attempt = 1;
             $reconnect_time = 0;
             $notified_admin = false;
+            $socket_failures = 0;
+            $current_reconnect_delay = $reconnect_delay;
             echo('connection successful'.EOL);
         }
         
