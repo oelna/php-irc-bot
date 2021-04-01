@@ -88,3 +88,7 @@ See last output: `supervisorctl tail php-chatbot`
 Start service: `supervisorctl start php-chatbot`  
 Stop service: `supervisorctl stop php-chatbot`  
 Restart service: `supervisorctl restart php-chatbot` (eg. after file modifications)  
+
+## Notes and resources
+
+- https://github.com/ilias-sp/Twitch-Chat-Bot-PHP/blob/master/documentation/Using_Twitch_API.md
